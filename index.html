@@ -10,6 +10,7 @@
         body {
             font-family: 'Inter', 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
             -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         .btn-amount {
             @apply w-full py-3 text-lg font-semibold border rounded-lg transition-all duration-200;
@@ -18,7 +19,7 @@
             @apply bg-teal-400 text-white border-teal-400;
         }
         .btn-amount-unselected {
-            @apply bg-white text-gray-700 border-gray-300;
+            @apply bg-gray-100 text-gray-700 border-gray-200 shadow-sm hover:bg-gray-200;
         }
         .hidden {
             display: none;
@@ -63,7 +64,7 @@
                 
                 <div class="flex items-center justify-center my-5">
                     <button id="decrease-btn" class="w-12 h-12 bg-blue-500 text-white rounded-full text-2xl font-bold flex items-center justify-center shadow-md">-</button>
-                    <input id="amount-input" type="number" value="0" class="w-32 text-center text-4xl font-bold mx-4 bg-transparent border-none focus:outline-none">
+                    <input id="amount-input" type="number" value="0" class="w-32 text-center text-4xl font-bold mx-4 bg-transparent border-none focus:outline-none transition-colors">
                     <button id="increase-btn" class="w-12 h-12 bg-blue-500 text-white rounded-full text-2xl font-bold flex items-center justify-center shadow-md">+</button>
                 </div>
 
@@ -236,7 +237,12 @@
             if (today.getTime() === targetDate.getTime()) {
                 return '今日';
             }
-            return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+            
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const week = ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
+            
+            return `${month}月${day}日（${week}）`;
         }
 
         function updateDateDisplay() {
@@ -286,10 +292,12 @@
                 typeToggleBtn.innerHTML = '+ 収入';
                 typeToggleBtn.classList.remove('bg-red-500', 'text-white');
                 typeToggleBtn.classList.add('bg-green-100', 'text-green-800');
+                amountInput.classList.remove('text-red-500');
             } else {
                 typeToggleBtn.innerHTML = '- 支出';
                  typeToggleBtn.classList.remove('bg-green-100', 'text-green-800');
                  typeToggleBtn.classList.add('bg-red-500', 'text-white');
+                 amountInput.classList.add('text-red-500');
             }
         }
 
@@ -407,3 +415,4 @@
     </script>
 </body>
 </html>
+
