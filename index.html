@@ -354,6 +354,11 @@
                     createdAt: Timestamp.now()
                 });
                 updateAmount(0);
+                 amountButtons.forEach(btn => {
+                    btn.classList.remove('btn-amount-selected');
+                    btn.classList.add('btn-amount-unselected');
+                });
+                stepAmount = 100;
             } catch (error) {
                 console.error("Error adding document: ", error);
                 entryError.textContent = '保存に失敗しました。';
@@ -429,21 +434,37 @@
                 todaysTransactions.forEach(t => {
                     const li = document.createElement('li');
                     li.className = 'flex justify-between items-center p-3 rounded-lg mb-2';
+                    
+                    const textDiv = document.createElement('div');
                     const amountText = `${t.amount.toLocaleString()}円`;
 
                     if (t.type === 'income') {
                         li.classList.add('bg-green-50');
-                        li.innerHTML = `
+                        textDiv.innerHTML = `
                             <span class="font-semibold text-green-700">収入</span>
-                            <span class="text-lg font-bold text-green-700">${amountText}</span>
+                            <span class="text-lg font-bold text-green-700 ml-4">${amountText}</span>
                         `;
                     } else {
                         li.classList.add('bg-red-50');
-                        li.innerHTML = `
+                        textDiv.innerHTML = `
                              <span class="font-semibold text-red-700">支出</span>
-                             <span class="text-lg font-bold text-red-700">-${amountText}</span>
+                             <span class="text-lg font-bold text-red-700 ml-4">-${amountText}</span>
                         `;
                     }
+                    
+                    const deleteButton = document.createElement('button');
+                    deleteButton.className = 'text-gray-400 hover:text-red-500 transition-colors p-2';
+                    deleteButton.innerHTML = `<i class="fas fa-trash-alt"></i>`;
+                    deleteButton.addEventListener('click', async () => {
+                        try {
+                            await deleteDoc(doc(db, "transactions", t.id));
+                        } catch (error) {
+                            console.error("Error deleting document:", error);
+                        }
+                    });
+
+                    li.appendChild(textDiv);
+                    li.appendChild(deleteButton);
                     historyList.appendChild(li);
                 });
             }
